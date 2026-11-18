@@ -351,7 +351,7 @@ a:focus-visible, button:focus-visible {
 
 /* Photo de présentation */
 .about-photo { margin: 0; overflow: hidden; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); }
-.about-photo img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: cover; }
+.about-photo img { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; object-fit: cover; }
 .about-photo figcaption {
   padding: .85rem 1rem;
   border-top: 1px solid var(--line);

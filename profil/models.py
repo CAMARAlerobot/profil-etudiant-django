@@ -5,6 +5,8 @@ class Profile(models.Model):
     full_name = models.CharField("Nom complet", max_length=120)
     headline = models.CharField("Titre", max_length=160, help_text="Ex : Étudiant M2 MIAGE")
     bio = models.TextField("À propos")
+    hero_intro = models.TextField("Introduction du hero", blank=True,
+                                  help_text="Texte court et distinct de la bio, affiché en page d'accueil.")
     photo_url = models.URLField("URL de la photo", blank=True)
     photo_asset = models.CharField("Photo (fichier statique)", max_length=200, blank=True,
                                    help_text="Ex : profil/images/photo-identite.jpeg")

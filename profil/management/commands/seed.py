@@ -16,6 +16,11 @@ class Command(BaseCommand):
         Profile.objects.create(
             full_name="CAMARA MAMADOU",
             headline="Développeur web full-stack",
+            hero_intro=(
+                "Développeur en formation, je donne vie à des projets web et desktop concrets. "
+                "Parcourez mon itinéraire, découvrez mes réalisations et les technologies "
+                "que je maîtrise."
+            ),
             bio=(
                 "Étudiant en Master 2 MIAGE à l'Université Nangui Abrogoua, j'aime "
                 "transformer des idées en applications web et desktop simples à utiliser. "
