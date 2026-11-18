@@ -80,7 +80,7 @@ class Command(BaseCommand):
 
         Activity.objects.create(
             kind="formation", title="L'ingénierie du prompt et Agent IA",
-            organisation="Formation en ligne", date=datetime.date(2026, 11, 21),
+            organisation="Formation en ligne", date=datetime.date(2026, 11, 12),
             description="Prise en main d'OpenCode et des agents IA.",
         )
 

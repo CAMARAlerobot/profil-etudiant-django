@@ -3,15 +3,25 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="{% if profile %}{{ profile.full_name }} — {{ profile.headline }}.{% else %}Portfolio étudiant.{% endif %}">
+  <meta name="description" content="{% if profile %}{{ profile.full_name }} — {{ profile.headline }}. Découvrez mon parcours, mes projets et mes compétences.{% else %}Portfolio étudiant.{% endif %}">
+  <meta name="theme-color" content="#0b1220">
   <title>{% if profile %}{{ profile.full_name }} — {{ profile.headline }}{% else %}Mon profil{% endif %}</title>
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="fr_FR">
+  <meta property="og:title" content="{% if profile %}{{ profile.full_name }} — {{ profile.headline }}{% else %}Mon profil{% endif %}">
+  <meta property="og:description" content="{% if profile %}Portfolio étudiant — {{ profile.bio|truncatechars:150 }}{% else %}Portfolio étudiant.{% endif %}">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  <meta name="twitter:card" content="summary">
+  <link rel="canonical" href="{{ request.build_absolute_uri }}">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop stop-color='%232563eb'/%3E%3Cstop offset='1' stop-color='%2306b6d4'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='url(%23g)'/%3E%3Ctext x='32' y='41' font-family='Arial' font-size='25' font-weight='bold' fill='white' text-anchor='middle'%3ECM%3C/text%3E%3C/svg%3E">
   <script>document.documentElement.classList.add("js");</script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-  <link href="{% static 'profil/style.css' %}?v=6" rel="stylesheet">
+  <link href="{% static 'profil/style.css' %}?v=8" rel="stylesheet">
 </head>
 <body>
   <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
@@ -40,6 +50,7 @@
     </div>
   </nav>
 
+  <main id="contenu">
   {% if not profile %}
     <div class="container py-5">
       <div class="alert alert-info rounded-4 p-4">
@@ -72,7 +83,8 @@
       </div>
 
       <div class="hero-profile">
-        <div class="profile-card" style="background-image: linear-gradient(180deg, rgba(9, 20, 40, .42), rgba(9, 20, 40, .92)), url('{% static 'profil/images/portfolio.jpeg' %}');">
+        <figure class="profile-card" style="background-image: linear-gradient(180deg, rgba(9, 20, 40, .42), rgba(9, 20, 40, .92)), url('{% static 'profil/images/portfolio.jpeg' %}');">
+          <figcaption class="profile-photo-caption"><i class="bi bi-camera"></i> Portrait · Abidjan</figcaption>
           <span class="student-badge profile-badge"><span></span> Étudiant</span>
           <h2>{{ profile.full_name }}</h2>
           <p class="profile-card-role">{{ profile.headline }}</p>
@@ -81,7 +93,7 @@
             {% if profile.email %}<a href="mailto:{{ profile.email }}"><i class="bi bi-envelope"></i> E-mail</a>{% endif %}
             {% if profile.phone %}<a href="tel:{{ profile.phone|cut:' ' }}"><i class="bi bi-telephone"></i> Appeler</a>{% endif %}
           </div>
-        </div>
+        </figure>
       </div>
     </div>
   </header>
@@ -96,7 +108,7 @@
         {% if profile.feature_image %}
         <div class="col-lg-4">
           <figure class="about-photo">
-            <img src="{% static profile.feature_image %}" alt="Les MIAGistes de l'Université Nangui Abrogoua">
+            <img src="{% static profile.feature_image %}" alt="Les MIAGistes de l'Université Nangui Abrogoua" width="1280" height="854" loading="lazy" decoding="async">
             <figcaption><i class="bi bi-camera"></i> Les MIAGistes de l'UNA</figcaption>
           </figure>
         </div>
@@ -345,15 +357,16 @@
     </div>
   </section>
 
+  <a href="#top" class="back-to-top" id="backToTop" aria-label="Retour en haut"><i class="bi bi-arrow-up"></i></a>
+  {% endif %}
+  </main>
+
   <footer class="site-footer">
     <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
-      <span>&copy; {% now "Y" %} {{ profile.full_name }}. Tous droits réservés.</span>
+      <span>&copy; {% now "Y" %} {{ profile.full_name|default:"Mon profil" }}. Tous droits réservés.</span>
       <span><i class="bi bi-mortarboard"></i> Portfolio étudiant · MIAGE</span>
     </div>
   </footer>
-
-  <a href="#top" class="back-to-top" id="backToTop" aria-label="Retour en haut"><i class="bi bi-arrow-up"></i></a>
-  {% endif %}
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script>
@@ -395,7 +408,10 @@
           entries.forEach(function (entry) {
             if (entry.isIntersecting) {
               navLinks.forEach(function (link) {
-                link.classList.toggle("active", link.getAttribute("href") === "#" + entry.target.id);
+                const isActive = link.getAttribute("href") === "#" + entry.target.id;
+                link.classList.toggle("active", isActive);
+                if (isActive) { link.setAttribute("aria-current", "true"); }
+                else { link.removeAttribute("aria-current"); }
               });
             }
           });
