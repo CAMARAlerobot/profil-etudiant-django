@@ -1,0 +1,416 @@
+{% load static %}<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="{% if profile %}{{ profile.full_name }} — {{ profile.headline }}.{% else %}Portfolio étudiant.{% endif %}">
+  <title>{% if profile %}{{ profile.full_name }} — {{ profile.headline }}{% else %}Mon profil{% endif %}</title>
+  <script>document.documentElement.classList.add("js");</script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+  <link href="{% static 'profil/style.css' %}?v=6" rel="stylesheet">
+</head>
+<body>
+  <div class="scroll-progress" id="scrollProgress" aria-hidden="true"></div>
+
+  <nav class="site-nav navbar navbar-expand-lg" aria-label="Navigation principale">
+    <div class="container">
+      <a class="brand" href="#top">
+        <span class="brand-mark">{{ profile.initials|default:"M" }}</span>
+        <span class="brand-name">{{ profile.full_name|default:"Mon profil" }}</span>
+      </a>
+      <button class="nav-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav"
+              aria-controls="nav" aria-expanded="false" aria-label="Afficher le menu">
+        <span></span><span></span><span></span>
+      </button>
+      <div id="nav" class="collapse navbar-collapse">
+        <ul class="nav-links ms-auto">
+          <li><a href="#apropos">À propos</a></li>
+          <li><a href="#parcours">Parcours</a></li>
+          <li><a href="#projets">Projets</a></li>
+          <li><a href="#activites">Expériences</a></li>
+          <li><a href="#competences">Compétences</a></li>
+          <li><a href="#complements">Langues</a></li>
+        </ul>
+        <a class="nav-cta" href="#contact"><i class="bi bi-chat-dots"></i> Contact</a>
+      </div>
+    </div>
+  </nav>
+
+  {% if not profile %}
+    <div class="container py-5">
+      <div class="alert alert-info rounded-4 p-4">
+        Aucun profil n'est encore enregistré. Lancez <code>python manage.py seed</code> ou ajoutez un profil dans <a href="/admin/">l'administration</a>.
+      </div>
+    </div>
+  {% else %}
+
+  <header id="top" class="hero">
+    <div class="hero-glow hero-glow-one" aria-hidden="true"></div>
+    <div class="hero-glow hero-glow-two" aria-hidden="true"></div>
+    <div class="container hero-inner">
+      <div class="hero-copy">
+        <span class="eyebrow"><span class="eyebrow-dot"></span> Portfolio étudiant · MIAGE</span>
+        <h1>Bonjour, je suis<br><span>{{ profile.full_name }}</span></h1>
+        <p class="hero-role">{{ profile.headline }}</p>
+        <p class="hero-description">{{ profile.bio|truncatechars:200 }}</p>
+        <div class="hero-actions">
+          {% if profile.cv_url %}
+            <a class="btn-primary-custom" href="{{ profile.cv_url }}" target="_blank" rel="noopener">
+              <i class="bi bi-download"></i> Télécharger mon CV
+            </a>
+          {% endif %}
+          <a class="btn-outline-custom" href="#contact"><i class="bi bi-send"></i> Me contacter</a>
+        </div>
+        <div class="hero-quick">
+          {% if profile.location %}<span><i class="bi bi-geo-alt"></i> {{ profile.location }}</span>{% endif %}
+          {% if profile.phone %}<span><i class="bi bi-telephone"></i> {{ profile.phone }}</span>{% endif %}
+        </div>
+      </div>
+
+      <div class="hero-profile">
+        <div class="profile-card" style="background-image: linear-gradient(180deg, rgba(9, 20, 40, .42), rgba(9, 20, 40, .92)), url('{% static 'profil/images/portfolio.jpeg' %}');">
+          <span class="student-badge profile-badge"><span></span> Étudiant</span>
+          <h2>{{ profile.full_name }}</h2>
+          <p class="profile-card-role">{{ profile.headline }}</p>
+          <div class="profile-card-divider"></div>
+          <div class="profile-card-links">
+            {% if profile.email %}<a href="mailto:{{ profile.email }}"><i class="bi bi-envelope"></i> E-mail</a>{% endif %}
+            {% if profile.phone %}<a href="tel:{{ profile.phone|cut:' ' }}"><i class="bi bi-telephone"></i> Appeler</a>{% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section id="apropos" class="section">
+    <div class="container">
+      <div class="section-heading">
+        <span class="section-kicker">01 / À propos</span>
+        <h2 class="section-title">Une passion pour les solutions concrètes</h2>
+      </div>
+      <div class="row g-4 align-items-start">
+        {% if profile.feature_image %}
+        <div class="col-lg-4">
+          <figure class="about-photo">
+            <img src="{% static profile.feature_image %}" alt="Les MIAGistes de l'Université Nangui Abrogoua">
+            <figcaption><i class="bi bi-camera"></i> Les MIAGistes de l'UNA</figcaption>
+          </figure>
+        </div>
+        {% endif %}
+        <div class="col-lg-4">
+          <p class="lead-text">{{ profile.bio|linebreaksbr }}</p>
+          <div class="signature-line"><span></span></div>
+        </div>
+        <div class="col-lg-4">
+          <aside class="info-card">
+            <h3><i class="bi bi-person-vcard"></i> Informations</h3>
+            <ul class="info-list">
+              {% if profile.location %}
+                <li><span class="info-icon"><i class="bi bi-geo-alt"></i></span><span><small>Localisation</small>{{ profile.location }}</span></li>
+              {% endif %}
+              {% if profile.phone %}
+                <li><span class="info-icon"><i class="bi bi-telephone"></i></span><span><small>Téléphone</small><a href="tel:{{ profile.phone|cut:' ' }}">{{ profile.phone }}</a></span></li>
+              {% endif %}
+              {% if profile.email %}
+                <li><span class="info-icon"><i class="bi bi-envelope"></i></span><span><small>E-mail</small><a href="mailto:{{ profile.email }}">{{ profile.email }}</a></span></li>
+              {% endif %}
+              {% if profile.linkedin %}
+                <li><span class="info-icon"><i class="bi bi-linkedin"></i></span><span><small>LinkedIn</small><a href="{{ profile.linkedin }}" target="_blank" rel="noopener">Voir le profil</a></span></li>
+              {% endif %}
+              {% if profile.github %}
+                <li><span class="info-icon"><i class="bi bi-github"></i></span><span><small>GitHub</small><a href="{{ profile.github }}" target="_blank" rel="noopener">Voir les dépôts</a></span></li>
+              {% endif %}
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="parcours" class="section section-alt">
+    <div class="container">
+      <div class="section-heading">
+        <span class="section-kicker">02 / Parcours</span>
+        <h2 class="section-title">Formation</h2>
+      </div>
+      <div class="timeline">
+        {% for e in educations %}
+          <article class="timeline-card">
+            <span class="timeline-marker"><i class="bi bi-mortarboard"></i></span>
+            <div class="timeline-content">
+              <span class="year-badge">{% if e.period %}{{ e.period }}{% else %}{{ e.start_year }}{% if e.end_year %} — {{ e.end_year }}{% else %} — en cours{% endif %}{% endif %}</span>
+              <h3>{{ e.degree }}</h3>
+              <p class="timeline-org">{{ e.school }}</p>
+              {% if e.description %}<p class="timeline-text">{{ e.description }}</p>{% endif %}
+            </div>
+          </article>
+        {% empty %}
+          <p class="text-muted">À compléter dans l'administration.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section id="projets" class="section">
+    <div class="container">
+      <div class="section-heading d-flex flex-wrap justify-content-between align-items-end gap-3">
+        <div>
+          <span class="section-kicker">03 / Réalisations</span>
+          <h2 class="section-title">Projets</h2>
+        </div>
+        <p class="section-note mb-0">Des projets pour apprendre, expérimenter et livrer.</p>
+      </div>
+      <div class="project-list">
+        {% for p in projects %}
+          <article class="project-row{% if p.featured %} project-row-featured{% endif %}">
+            <div class="project-row-index">
+              <span class="project-row-number">{{ forloop.counter|stringformat:"02d" }}</span>
+              {% if p.period %}<span class="project-row-period">{{ p.period }}</span>{% endif %}
+            </div>
+            <div class="project-row-main">
+              <div class="project-row-heading">
+                <h3>{{ p.title }}</h3>
+                {% if p.featured %}<span class="featured-badge"><i class="bi bi-star-fill"></i> Projet phare</span>{% endif %}
+              </div>
+              {% if p.role %}<p class="project-role">{{ p.role }}</p>{% endif %}
+              <p class="project-summary">{{ p.summary }}</p>
+              <div class="stack-list">
+                {% for t in p.stack_list %}<span>{{ t }}</span>{% endfor %}
+              </div>
+              {% if p.url or p.repo_url %}
+                <div class="project-actions">
+                  {% if p.url %}<a href="{{ p.url }}" target="_blank" rel="noopener"><i class="bi bi-box-arrow-up-right"></i> Démo</a>{% endif %}
+                  {% if p.repo_url %}<a href="{{ p.repo_url }}" target="_blank" rel="noopener"><i class="bi bi-git"></i> Code</a>{% endif %}
+                </div>
+              {% endif %}
+            </div>
+            <div class="project-row-visual" aria-hidden="true">
+              <span class="project-visual-icon"><i class="bi bi-code-slash"></i></span>
+              <span class="project-visual-line"></span>
+              <span class="project-visual-line short"></span>
+            </div>
+          </article>
+        {% empty %}
+          <p class="text-muted">À compléter dans l'administration.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section id="activites" class="section section-alt">
+    <div class="container">
+      <div class="section-heading">
+        <span class="section-kicker">04 / Expériences</span>
+        <h2 class="section-title">Formations &amp; activités</h2>
+      </div>
+      <div class="event-list">
+        {% for a in activities %}
+          <article class="event-card">
+            <div class="event-date">
+              <span class="event-day">{{ a.date|date:"d" }}</span>
+              <span class="event-month">{{ a.date|date:"M Y" }}</span>
+            </div>
+            <div class="event-body">
+              <div class="event-meta">
+                <span class="kind-badge">{{ a.get_kind_display }}</span>
+                {% if a.organisation %}<span class="event-org"><i class="bi bi-building"></i> {{ a.organisation }}</span>{% endif %}
+              </div>
+              <h3>{{ a.title }}</h3>
+              {% if a.description %}<p>{{ a.description }}</p>{% endif %}
+            </div>
+          </article>
+        {% empty %}
+          <p class="text-muted">À compléter dans l'administration.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section id="competences" class="section">
+    <div class="container">
+      <div class="section-heading d-flex flex-wrap justify-content-between align-items-end gap-3">
+        <div>
+          <span class="section-kicker">05 / Savoir-faire</span>
+          <h2 class="section-title">Compétences</h2>
+        </div>
+        <p class="section-note mb-0">La taille des badges reflète le niveau de maîtrise.</p>
+      </div>
+      <div class="skills-layout">
+        {% for cat, items in skill_groups %}
+          <article class="skill-group">
+            <div class="skill-group-head">
+              <span class="skill-group-icon">
+                {% if cat == "Backend" %}<i class="bi bi-server"></i>
+                {% elif cat == "Frontend" %}<i class="bi bi-window-stack"></i>
+                {% elif cat == "Bases de données" %}<i class="bi bi-database"></i>
+                {% elif cat == "Réseaux / Systèmes" %}<i class="bi bi-hdd-network"></i>
+                {% else %}<i class="bi bi-tools"></i>{% endif %}
+              </span>
+              <div>
+                <h3>{{ cat }}</h3>
+                <span class="skill-group-count">{{ items|length }} compétences</span>
+              </div>
+            </div>
+            <div class="skill-tags">
+              {% for s in items %}
+                {% if s.level >= 85 %}
+                  <span class="skill-tag skill-tag-lg">{{ s.name }}<small>{{ s.level }}%</small></span>
+                {% elif s.level >= 75 %}
+                  <span class="skill-tag skill-tag-md">{{ s.name }}<small>{{ s.level }}%</small></span>
+                {% else %}
+                  <span class="skill-tag skill-tag-sm">{{ s.name }}<small>{{ s.level }}%</small></span>
+                {% endif %}
+              {% endfor %}
+            </div>
+          </article>
+        {% empty %}
+          <p class="text-muted">À compléter dans l'administration.</p>
+        {% endfor %}
+      </div>
+    </div>
+  </section>
+
+  <section id="complements" class="section section-alt">
+    <div class="container">
+      <div class="section-heading">
+        <span class="section-kicker">06 / Compléments</span>
+        <h2 class="section-title">Langues &amp; centres d'intérêt</h2>
+      </div>
+      <div class="row g-4">
+        <div class="col-md-6">
+          <div class="info-card">
+            <h3><i class="bi bi-translate"></i> Langues</h3>
+            <ul class="chip-list">
+              {% for language in languages %}
+                <li><span class="chip-name">{{ language.name }}</span>{% if language.level %}<span class="chip-level">{{ language.level }}</span>{% endif %}</li>
+              {% empty %}<li class="text-muted">À compléter dans l'administration.</li>{% endfor %}
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="info-card">
+            <h3><i class="bi bi-stars"></i> Centres d'intérêt</h3>
+            <ul class="chip-list">
+              {% for interest in interests %}<li><span class="chip-name">{{ interest.name }}</span></li>{% empty %}<li class="text-muted">À compléter dans l'administration.</li>{% endfor %}
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="section contact-section">
+    <div class="container">
+      <div class="contact-panel">
+        <div class="contact-copy">
+          <span class="section-kicker section-kicker-light">07 / Contact</span>
+          <h2>Échangeons sur vos idées et vos projets</h2>
+          <p>Un stage, une collaboration ou une simple question ? Je serai ravi de vous répondre.</p>
+        </div>
+        <div class="contact-details">
+          {% if profile.email %}
+            <a class="contact-card" href="mailto:{{ profile.email }}">
+              <span class="contact-icon"><i class="bi bi-envelope-paper"></i></span>
+              <span><small>E-mail</small>{{ profile.email }}</span>
+              <i class="bi bi-arrow-up-right contact-arrow"></i>
+            </a>
+          {% endif %}
+          {% if profile.phone %}
+            <a class="contact-card" href="tel:{{ profile.phone|cut:' ' }}">
+              <span class="contact-icon"><i class="bi bi-telephone"></i></span>
+              <span><small>Téléphone</small>{{ profile.phone }}</span>
+              <i class="bi bi-arrow-up-right contact-arrow"></i>
+            </a>
+          {% endif %}
+          {% if profile.linkedin %}
+            <a class="contact-card" href="{{ profile.linkedin }}" target="_blank" rel="noopener">
+              <span class="contact-icon"><i class="bi bi-linkedin"></i></span>
+              <span><small>LinkedIn</small>Voir mon profil</span>
+              <i class="bi bi-arrow-up-right contact-arrow"></i>
+            </a>
+          {% endif %}
+          {% if profile.github %}
+            <a class="contact-card" href="{{ profile.github }}" target="_blank" rel="noopener">
+              <span class="contact-icon"><i class="bi bi-github"></i></span>
+              <span><small>GitHub</small>Voir mes projets</span>
+              <i class="bi bi-arrow-up-right contact-arrow"></i>
+            </a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+      <span>&copy; {% now "Y" %} {{ profile.full_name }}. Tous droits réservés.</span>
+      <span><i class="bi bi-mortarboard"></i> Portfolio étudiant · MIAGE</span>
+    </div>
+  </footer>
+
+  <a href="#top" class="back-to-top" id="backToTop" aria-label="Retour en haut"><i class="bi bi-arrow-up"></i></a>
+  {% endif %}
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    (function () {
+      const reveals = document.querySelectorAll(".hero-profile, .section-heading, .about-photo, .lead-text, .info-card, .timeline-card, .project-row, .event-card, .skill-group, .contact-panel");
+      if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.12 });
+        reveals.forEach(function (el) { observer.observe(el); });
+        // Sécurité : tout le contenu devient visible même sans défilement
+        // (capture pleine page, impression, navigateur ancien).
+        window.setTimeout(function () {
+          reveals.forEach(function (el) { el.classList.add("is-visible"); });
+        }, 1200);
+      } else {
+        reveals.forEach(function (el) { el.classList.add("is-visible"); });
+      }
+
+      const progress = document.getElementById("scrollProgress");
+      const backToTop = document.getElementById("backToTop");
+      function onScroll() {
+        const doc = document.documentElement;
+        const max = doc.scrollHeight - doc.clientHeight;
+        progress.style.width = (max > 0 ? (doc.scrollTop / max) * 100 : 0) + "%";
+        backToTop.classList.toggle("show", doc.scrollTop > 500);
+      }
+      window.addEventListener("scroll", onScroll, { passive: true });
+      onScroll();
+
+      const navLinks = Array.prototype.slice.call(document.querySelectorAll(".nav-links a"));
+      if ("IntersectionObserver" in window) {
+        const navObserver = new IntersectionObserver(function (entries) {
+          entries.forEach(function (entry) {
+            if (entry.isIntersecting) {
+              navLinks.forEach(function (link) {
+                link.classList.toggle("active", link.getAttribute("href") === "#" + entry.target.id);
+              });
+            }
+          });
+        }, { rootMargin: "-45% 0px -50% 0px" });
+        document.querySelectorAll("section[id]").forEach(function (section) { navObserver.observe(section); });
+      }
+      navLinks.forEach(function (link) {
+        link.addEventListener("click", function () {
+          const menu = document.getElementById("nav");
+          if (menu.classList.contains("show")) {
+            bootstrap.Collapse.getInstance(menu).hide();
+          }
+        });
+      });
+    })();
+  </script>
+</body>
+</html>
