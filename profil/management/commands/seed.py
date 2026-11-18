@@ -93,10 +93,10 @@ class Command(BaseCommand):
             ("SQL", "Bases de données", 85), ("MySQL", "Bases de données", 80),
             ("PostgreSQL / PostGIS", "Bases de données", 75),
             ("Merise (MCD, MLD, MPD)", "Bases de données", 80),
-            ("Administration réseau", "Réseaux / Systèmes", 65),
-            ("Gestion des droits", "Réseaux / Systèmes", 70),
-            ("Pare-feu", "Réseaux / Systèmes", 60),
-            ("Linux (ligne de commande)", "Réseaux / Systèmes", 70),
+            ("Administration réseau", "Réseaux / Systèmes", 30),
+            ("Gestion des droits", "Réseaux / Systèmes", 30),
+            ("Pare-feu", "Réseaux / Systèmes", 30),
+            ("Linux (ligne de commande)", "Réseaux / Systèmes", 30),
             ("Git", "Outils", 85), ("GitHub", "Outils", 85),
         ]
         for name, category, level in skills:
